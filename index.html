@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المعلم التفاعلي - الكفاية الكتابية | ثانوية الأمير عبد المجيد</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tone.js & Canvas Confetti -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --bg-base: #FAF6F0;
+            --bg-card: #FFFFFF;
+            --bg-card-subtle: #F5EFE6;
+            --primary: #800020; /* عنابي ملكي */
+            --primary-hover: #5c0017;
+            --secondary: #9E7B1A; /* ذهبي */
+            --secondary-light: #FFF8DC;
+            --accent-red: #C0392B;
+            --text-dark: #2C2C2C;
+            --text-muted: #666666;
+            --border-color: #E8DFD8;
+            --success: #27AE60;
+            --shadow: 0 8px 24px rgba(128, 0, 32, 0.08);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(rgba(158, 123, 26, 0.12) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #4A0012 100%);
+            color: #FFFFFF;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            position: relative;
+            z-index: 1;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--secondary), #FFF, var(--secondary));
+        }
+
+        .badge-teacher {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(158, 123, 26, 0.22);
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        main {
+            max-width: 1000px;
+            width: 92%;
+            margin: 1.5rem auto 3rem auto;
+            flex: 1;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            background: var(--bg-card);
+            padding: 8px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            position: relative;
+            z-index: 10;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.95rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(128, 0, 32, 0.2);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 1.8rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .rule-section {
+            margin-bottom: 2.2rem;
+            border-right: 4px solid var(--secondary);
+            padding-right: 15px;
+        }
+
+        .rule-title {
+            color: var(--secondary);
+            font-size: 1.35rem;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 14px;
+            margin-top: 1rem;
+        }
+
+        .rule-card {
+            background: var(--bg-card-subtle);
+            padding: 1.1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .rule-card h4 {
+            color: var(--primary);
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+            font-weight: 800;
+        }
+
+        .rule-card p {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            line-height: 1.55;
+        }
+
+        .example-box {
+            background: #FFF;
+            border-right: 3px solid var(--secondary);
+            padding: 6px 10px;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            color: #444;
+            font-weight: 600;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            background: var(--bg-card-subtle);
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+        }
+
+        .quiz-progress {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .quiz-score {
+            font-weight: 800;
+            color: var(--success);
+            font-size: 1.05rem;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: var(--bg-card-subtle);
+            border: 2px solid var(--border-color);
+            padding: 0.9rem 1.1rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+            text-align: right;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: #FFF;
+        }
+
+        .option-btn.correct {
+            background: #E8F8F0 !important;
+            border-color: var(--success) !important;
+            color: var(--success) !important;
+        }
+
+        .option-btn.incorrect {
+            background: #FADBD8 !important;
+            border-color: var(--accent-red) !important;
+            color: var(--accent-red) !important;
+        }
+
+        .explanation-box {
+            margin-top: 1.2rem;
+            padding: 1rem;
+            border-radius: 12px;
+            background: #FFF8DC;
+            border: 1px solid var(--secondary);
+            display: none;
+            line-height: 1.5;
+        }
+
+        .btn-action {
+            background: var(--primary);
+            color: #FFF;
+            border: none;
+            padding: 12px 26px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 1.2rem;
+            transition: background 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background: var(--primary-hover);
+        }
+
+        .classify-container {
+            text-align: center;
+        }
+
+        .target-card {
+            background: linear-gradient(135deg, var(--bg-card-subtle), #FFF);
+            border: 2px dashed var(--secondary);
+            padding: 1.5rem;
+            border-radius: 16px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.03);
+            line-height: 1.6;
+        }
+
+        .targets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .target-btn {
+            background: var(--bg-card-subtle);
+            border: 2px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .target-btn:hover {
+            border-color: var(--primary);
+            background: #FFF;
+            transform: translateY(-2px);
+        }
+
+        .results-box {
+            text-align: center;
+            padding: 2.5rem 1rem;
+        }
+
+        .score-circle {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #FFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.2rem auto;
+            font-size: 2.2rem;
+            font-weight: 900;
+            box-shadow: 0 8px 20px rgba(128, 0, 32, 0.25);
+        }
+
+        .score-circle span {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.2rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-card);
+            margin-top: auto;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.5rem; }
+            .nav-tabs { flex-direction: column; }
+            .card { padding: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="badge-teacher">
+            <i class="fa-solid fa-graduation-cap"></i>
+            الأستاذ عبدالعزيز الفيفي - ثانوية الأمير عبد المجيد
+        </div>
+        <h1>الكفاية الاتصالية: مهارات الكتابة الموضوعية</h1>
+        <p class="subtitle">تطبيق مراجعة وتدريبات تفاعلية لمادة الكفايات اللغوية (الوحدة التدريبية الرابعة)</p>
+    </header>
+
+    <main>
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('cheatsheet')">
+                <i class="fa-solid fa-book-bookmark"></i>
+                الملخص المفصل
+            </button>
+            <button class="tab-btn" onclick="switchTab('quiz')">
+                <i class="fa-solid fa-pen-to-square"></i>
+                الاختبار الشامل (30 سؤالاً)
+            </button>
+            <button class="tab-btn" onclick="switchTab('classify')">
+                <i class="fa-solid fa-layer-group"></i>
+                تحدي التناظر والتصنيف (25 فقرة)
+            </button>
+        </div>
+
+        <!-- Cheatsheet Tab -->
+        <div id="cheatsheet" class="tab-content active">
+            <div class="card">
+                
+                <!-- الفصل الأول: الفنون التعبيرية وعناصرها الفنية -->
+                <div class="rule-section">
+                    <div class="rule-title">
+                        <i class="fa-solid fa-feather-pointed"></i>
+                        الفصل الأول: الفنون التعبيرية وعناصرها الفنية وخصائصها
+                    </div>
+                    <div class="rule-grid">
+                        <div class="rule-card">
+                            <h4>1. المقال</h4>
+                            <p><strong>العناصر:</strong> عنوان (قصير ومثير ودال)، مقدمة (قصيرة ومشوقة تمهد للموضوع)، عرض (فقرات تعبر كل فقرة عن فكرة رئيسية مع أفكار جزئية)، وخاتمة.</p>
+                            <div class="example-box">الخاتمة تلخص أهم ما جاء في المقال، أو تقدم حلاً لمشكلة، أو تقدم توصية.</div>
+                        </div>
+                        <div class="rule-card">
+                            <h4>2. القصة</h4>
+                            <p><strong>العناصر:</strong> الزمان والمكان، الشخصيات، الأحداث، الحبكة والعقدة، الحل والسرد والحوار.</p>
+                            <div class="example-box">تمتاز بترابط الأحداث والتشويق.</div>
+                        </div>
+                        <div class="rule-card">
+                            <h4>3. الرسائل الإدارية (الرسمية)</h4>
+                            <p><strong>العناصر:</strong> البسملة، التاريخ، بيانات المرسل والمرسل إليه، التحية، موضوع الرسالة، الخاتمة، والتوقيع (والمرفقات إن وجدت).</p>
+                            <div class="example-box">تمتاز بالوضوح والإيجاز والرسمية.</div>
+                        </div>
+                        <div class="rule-card">
+                            <h4>4. التقرير</h4>
+                            <p><strong>العناصر:</strong> عنوان، مقدمة تبين الهدف، عرض منظم للحقائق، وخاتمة تتضمن النتائج والتوصيات مع بيانات معد التقرير وتاريخه.</p>
+                            <div class="example-box">يمتاز بالدقة والموضوعية.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الفصل الثاني: خطوات بناء الموضوع -->
+                <div class="rule-section">
+                    <div class="rule-title">
+                        <i class="fa-solid fa-list-check"></i>
+                        الفصل الثاني: خطوات بناء الموضوع (المراحل السبع للكتابة)
+                    </div>
+                    <div class="rule-grid">
+                        <div class="rule-card">
+                            <h4>1. اختيار الموضوع</h4>
+                            <p>معلوماتك عنه جيدة، أو يمثل جزءاً من اهتماماتك، أو يهم القراء، أو لديك إضافات عنه.</p>
+                        </div>
+                        <div class="rule-card">
+                            <h4>2. تحديد الهدف</h4>
+                            <p>التعبير عن الذات (عاطفة/رأي)، إنشاء علاقات اجتماعية، أو معالجة معلومات (توضيح، إضافة، تلخيص...).</p>
+                        </div>
+                        <div class="rule-card">
+                            <h4>3. جمع المعلومات وتصنيفها</h4>
+                            <p>المصادر: الكتب، الصحف، المجلات، الإنترنت، المقابلات، والخبرة الشخصية. ثم تصنيفها في أبواب أو أفكار رئيسية.</p>
+                        </div>
+                        <div class="rule-card">
+                            <h4>4. التخطيط للموضوع</h4>
+                            <p>تصميم مخطط الموضوع وتنظيمه قبل البدء بالتنفيذ المباشر.</p>
+                        </div>
+                        <div class="rule-card">
+                            <h4>5. الكتابة الأولى (المسودة)</h4>
+                            <p>التركيز على عرض المعلومات واستيفائها مع الاهتمام بجودة بناء الفقرات دون توقف فوري للتعديل.</p>
+                        </div>
+                        <div class="rule-card">
+                            <h4>6. المراجعة</h4>
+                            <p>التأكد من صحة اللغة والإملاء، علامات الترقيم، منطقية تسلسل الأفكار، وجمال الأسلوب وقوة التأثير والإقناع.</p>
+                        </div>
+                        <div class="rule-card">
+                            <h4>7. الكتابة النهائية (المبيضة)</h4>
+                            <p>كتابة النسخة الأخيرة مع الاهتمام بجودة الإخراج وتناسق الهوامش والوضوح.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الفصل الثالث: مهارات بناء الموضوع -->
+                <div class="rule-section">
+                    <div class="rule-title">
+                        <i class="fa-solid fa-pen-nib"></i>
+                        الفصل الثالث: مهارات بناء الموضوع التفصيلية
+                    </div>
+                    <div class="rule-grid">
+                        <div class="rule-card">
+                            <h4>1. اختيار العنوان</h4>
+                            <p>الشروط: قصير، مثير، ودال على المحتوى.</p>
+                        </div>
+                        <div class="rule-card">
+                            <h4>2. بناء المقدمة</h4>
+                            <p>قصيرة، مشوقة، وتمهد للموضوع بأسلوب جاذب.</p>
+                        </div>
+                        <div class="rule-card">
+                            <h4>3. الكتابة في فقرات</h4>
+                            <p>تبدأ كل فقرة بفراغ بمقدار كلمة وتنتهي بنقطة (.)، وتعبر كل فقرة عن فكرة واحدة.</p>
+                        </div>
+                        <div class="rule-card">
+                            <h4>4. تسلسل الأفكار</h4>
+                            <p>تسلسل منطقي أو زمني، بحيث تمهد كل فكرة لما بعدها وتكمل ما قبلها.</p>
+                        </div>
+                        <div class="rule-card">
+                            <h4>5. بناء الخاتمة</h4>
+                            <p>تلخيص الأفكار، أو تقديم توصيات ومقترحات، أو تبيان الرأي النهائبي للكاتب.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الفصل الرابع: تصميم مخطط الموضوع -->
+                <div class="rule-section">
+                    <div class="rule-title">
+                        <i class="fa-solid fa-sitemap"></i>
+                        الفصل الرابع: تصميم مخطط الموضوع ورسوم التخطيط
+                    </div>
+                    <div class="rule-grid">
+                        <div class="rule-card">
+                            <h4>عناصر تصميم المخطط</h4>
+                            <p>1. تحديد العناصر الفنية بحسب نوع الفن.<br>
+                               2. تحديد الأفكار الرئيسة لكل عنصر.<br>
+                               3. تحديد الأفكار والجزئيات التفصيلية.<br>
+                               4. اقتراح أسلوب العرض، وأساليب التأثير والإقناع، وشواهد الدعم.</p>
+                        </div>
+                        <div class="rule-card">
+                            <h4>رسوم التخطيط الهيكلية</h4>
+                            <p>يمكن تلخيص مخطط الموضوع قبل الكتابة باستخدام: <strong>شجرة الذاكرة</strong>، أو <strong>مخطط هيكل السمكة</strong>، أو الجداول التوضيحية.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Quiz Tab -->
+        <div id="quiz" class="tab-content">
+            <div class="card">
+                <div class="quiz-header">
+                    <span class="quiz-progress" id="quiz-progress">السؤال 1 من 30</span>
+                    <span class="quiz-score" id="quiz-score">النقاط: 0</span>
+                </div>
+
+                <div class="question-text" id="question-text">جاري تحميل السؤال...</div>
+                <div class="options-grid" id="options-container"></div>
+                <div class="explanation-box" id="explanation-box"></div>
+
+                <button class="btn-action" id="btn-next" style="display: none; float: left;" onclick="nextQuestion()">السؤال التالي <i class="fa-solid fa-arrow-left"></i></button>
+
+                <div id="results-area" class="results-box" style="display: none;">
+                    <div class="score-circle" id="final-score-circle">0/30 <span>درجتك النهائية</span></div>
+                    <h2 id="final-message" style="color: var(--primary); margin-bottom: 1rem;">أداء ممتاز!</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">تم إكمال اختبار مهارات الاتصال الكتابي وبناء الموضوع بنجاح.</p>
+                    <button class="btn-action" onclick="restartQuiz()">إعادة الاختبار <i class="fa-solid fa-rotate-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classify Challenge Tab -->
+        <div id="classify" class="tab-content">
+            <div class="card classify-container">
+                <div class="quiz-header">
+                    <span class="quiz-progress" id="classify-progress">الفقرة 1 من 25</span>
+                    <span class="quiz-score" id="classify-score">النقاط: 0</span>
+                </div>
+
+                <h3 style="color: var(--primary); margin-bottom: 0.5rem;"><i class="fa-solid fa-bullseye"></i> تحدي التناظر وتصنيف المفاهيم</h3>
+                <p style="color: var(--text-muted); margin-bottom: 1.2rem;">اختر المهارة أو الفن التعبيري أو الخطوة الكتابية المناسبة لكل عبارة:</p>
+
+                <div class="target-card" id="classify-text">جاري تحميل التحدي...</div>
+
+                <div class="targets-grid" id="classify-buttons"></div>
+
+                <div class="explanation-box" id="classify-feedback" style="margin-top: 1.5rem;"></div>
+
+                <button class="btn-action" id="classify-next-btn" style="display: none; margin: 1.5rem auto 0 auto;" onclick="nextClassifyItem()">التالي <i class="fa-solid fa-arrow-left"></i></button>
+
+                <div id="classify-results" class="results-box" style="display: none;">
+                    <div class="score-circle" id="classify-final-score">0/25 <span>درجة التحدي</span></div>
+                    <h2 style="color: var(--primary); margin-bottom: 1rem;">انتهى التحدي التفاعلي السريع!</h2>
+                    <button class="btn-action" onclick="restartClassify()">إعادة التحدي <i class="fa-solid fa-rotate-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        تطبيق المعلم التفاعلي &copy; 2026 - إعداد الأستاذ عبدالعزيز الفيفي | ثانوية الأمير عبد المجيد
+    </footer>
+
+    <script>
+        const rawQuestions = [
+            { q: "ما الفن التعبيري الذي تتكون عناصره من (الزمان والمكان، الشخصيات، الأحداث، الحبكة، الحل)؟", a: "القصة", options: ["القصة", "المقال", "التقرير", "الرسالة الإدارية"], e: "القصة فن تعبيري تتكامل فيه العناصر السردية كالشخصيات والأحداث والحبكة والحل." },
+            { q: "ما الفن التعبيري الذي تتألف عناصره من (عنوان، مقدمة تبين الهدف، عرض للحقائق، وخاتمة تتضمن النتائج والتوصيات)؟", a: "التقرير", options: ["التقرير", "المقال", "القصة", "الرسالة الرسمية"], e: "التقرير يركز على عرض منظّم للحقائق والنتائج والتوصيات بدقة وموضوعية." },
+            { q: "المرسل، المرسل إليه، البسملة، التاريخ، التحية، الموضوع، الخاتمة، والتوقيع هي عناصر الفن التعبيري:", a: "الرسائل الإدارية الرسمية", options: ["الرسائل الإدارية الرسمية", "المقال الأدبي", "القصة القصيرة", "التقرير الفني"], e: "الرسائل الإدارية الرسمية تتميز بهذه العناصر الشكلية وتتسم بالوضوح والإيجاز." },
+            { q: "تبدأ كل فقرة في الموضوع التعبيري المنظم بـ:", a: "ترك فراغ بمقدار كلمة واحدة", options: ["ترك فراغ بمقدار كلمة واحدة", "وضع عنوان عريض في منتصف السطر", "كتابة البسملة في أولها", "رسم جدول أو شكل تعبيري"], e: "من مهارات الكتابة الموضوعية بدء كل فقرة بفراغ بمقدار كلمة واحدة وانهاؤها بنقطة." },
+            { q: "أي مما يلي يُعد من الشروط الأساسية للعنوان الجيد؟", a: "أن يكون قصيراً ومثيراً ودالاً على المحتوى", options: ["أن يكون قصيراً ومثيراً ودالاً على المحتوى", "أن يكون طويلاً ويشرح الخاتمة بالكامل", "أن يحتوي على جميع أسماء المراجع", "أن يكون معقداً وغامضاً تماماً"], e: "شروط العنوان الجيد هي: أن يكون قصيراً، ومثيراً، ودالاً على المحتوى." },
+            { q: "أول خطوة من خطوات بناء الموضوع السبع هي:", a: "اختيار الموضوع", options: ["اختيار الموضوع", "تحديد الهدف", "جمع المعلومات", "التخطيط للموضوع"], e: "تبدأ خطوات البناء باختيار موضوع تمتلك عنه معلومات جيدة أو يهمك ويستفيد منه القراء." },
+            { q: "الكتابة الأولى (المسودة) تهدف بالدرجة الأولى إلى:", a: "عرض المعلومات واستيفائها دون إعاقة بالتعديل الفوري", options: ["عرض المعلومات واستيفائها دون إعاقة بالتعديل الفوري", "التنقيح والتصحيح الإملائي النهائي", "تصميم الغلاف والإخراج المطبعي", "التنازل عن تسلسل الأفكار المنطقي"], e: "في المسودة يركز الكاتب على كتابة وتجميع الأفكار واستيفاء الأفكار ثم المراجعة لاحقاً." },
+            { q: "أي مما يلي ليس من المصادر الرئيسية المعتمدة لجمع معلومات الموضوع؟", a: "تخيل أرقام ودراسات غير حقيقية", options: ["تخيل أرقام ودراسات غير حقيقية", "الكتب والمجلات والصحف", "الشبكة العنكبوتية (الإنترنت)", "المقابلات والخبرة الشخصية"], e: "جمع المعلومات يعتمد على المصادر الحقيقية كالكتاب والإنترنت والمقابلات والخبرة." },
+            { q: "عندما تهدف من كتابتك إلى التعبير عن عاطفتك وانفعالاتك تجاه حدث معين، فإن الفن الأنسب هو:", a: "القصيدة أو القصة أو الخاطرة", options: ["القصيدة أو القصة أو الخاطرة", "التقرير الإداري", "الرسالة الإدارية الرسمية", "المقال العلمي التجريبي"], e: "الهدف العاطفي أو التعبير عن الذات يتناسب مع الفنون الأدبية كالقواعد والقصص." },
+            { q: "مهارة تنص على أن تكون كل فكرة تمهد لما بعدها وتكمل ما قبلها في الموضوع تُعرف بـ:", a: "تسلسل الأفكار", options: ["تسلسل الأفكار", "اختيار العنوان", "بناء الخاتمة", "جمع المعلومات"], e: "تسلسل الأفكار يعتمد على الترتيب المنطقي أو الزمني وتكامل الفقرات." },
+            { q: "خطوة المراجعة في مراحل بناء الموضوع تتضمن التأكد من:", a: "صحة اللغة والإملاء والترقيم وقوة التأثير والإقناع", options: ["صحة اللغة والإملاء والترقيم وقوة التأثير والإقناع", "جمع المراجع وصنع الفهرس فقط", "تحديد نوع الورق والطباعة", "اختيار عنوان جديد غير مرتبط بالصحة"], e: "تتأكد في المراجعة من سلامة الإملاء، الترقيم، منطقية الأفكار، وقوة التأثير والإقناع." },
+            { q: "تصميم مخطط الموضوع قبل البدء بالكتابة يسهم في:", a: "تنظيم الأفكار الرئيسية والجزئية وضمان عدم إغفال عناصر الفن", options: ["تنظيم الأفكار الرئيسية والجزئية وضمان عدم إغفال عناصر الفن", "زيادة كمية الحشو في الموضوع", "إلغاء الحاجة لمراجعة الموضوع", "استبدال الخاتمة بالمقدمة"], e: "التخطيط يضمن رسم الهيكل العام للموضوع وتحديد الجزئيات ووسائل الإقناع." },
+            { q: "الرسم الذي يخصص الذيل للعنوان والرأس للفكرة الكلية والعظام للجزئيات يُسمى:", a: "مخطط هيكل السمكة", options: ["مخطط هيكل السمكة", "شجرة الذاكرة", "خريطة المفاهيم الجغرافية", "رسم التقرير الدائري"], e: "مخطط هيكل السمكة من أفضل الأشكال لتلخيص المخطط قبل الكتابة." },
+            { q: "المقدمة المشوقة والجيدة في المقال تتصف بـ:", a: "أن تكون قصيرة وتمهد للموضوع بأسلوب جذاب", options: ["أن تكون قصيرة وتمهد للموضوع بأسلوب جذاب", "أن تتضمن جميع الإحصاءات والنتائج تفصيلياً", "أن تتكون من سطر واحد مبهم", "أن تحتوي على المراجع والبيانات الرسمية"], e: "المقدمة تمهد للموضوع وتشوق القارئ دون أن تستعرض التفصيلات المعقدة." },
+            { q: "الخطوة السابعة والأخيرة من خطوات بناء الموضوع هي:", a: "الكتابة النهائية (المبيضة)", options: ["الكتابة النهائية (المبيضة)", "الكتابة الأولى (المسودة)", "المراجعة والتنقيح", "تحديد الهدف"], e: "الكتابة النهائية (المبيضة) تهتم بجودة الإخراج وتناسق الهوامش والوضوح." },
+            { q: "الفن التعبيري الذي يتكون من عنوان، ومقدمة، وعرض في فقرات، وخاتمة هو:", a: "المقال", options: ["المقال", "القصة", "الرسالة الإدارية", "التقرير"], e: "المقال بيت تكون من العناصر الفنية الأربعة: العنوان، المقدمة، العرض، والخاتمة." },
+            { q: "من الخصائص الرئيسية للرسائل الإدارية أنها تمتاز بـ:", a: "الوضوح والإيجاز والرسمية", options: ["الوضوح والإيجاز والرسمية", "الغموض والإطالة الخيالية", "استخدام الأوزان الشعرية", "سرد الشخصيات والأحداث"], e: "الرسالة الرسمية/الإدارية تتسم بالإيجاز المباشر، الوضوح، والطابع الرسمي." },
+            { q: "عند اختيار موضوعك، يفضل أن يكون استناداً إلى:", a: "معلوماتك الجيدة عنه، أو اهتمامك به، أو حاجة القراء إليه", options: ["معلوماتك الجيدة عنه، أو اهتمامك به، أو حاجة القراء إليه", "صعوبته الشديدة وجهلك التام به", "اختيار عشوائي لا يهم القارئ", "طول صفحاته فقط"], e: "اختيار الموضوع يعتمد على المعرفة السابقة، الاهتمام الشخصي، وأهميته للمتلقي." },
+            { q: "تنتهي كل فقرة في النص التعبيري المكتوب بـ:", a: "نقطة (.)", options: ["نقطة (.)", "علامة تعجب (!)", "فاصلة منقوطة (;)", "شرطة طويلة (-)"], e: "من المهارات الأساسية للكتابة في فقرات أن تبدأ بفراغ كلمة وتنتهي بنقطة." },
+            { q: "تحديد السبب الرئيسي للكتابة (كتوضيح معلومة أو إنشاء علاقة) يتم في خطوة:", a: "تحديد الهدف", options: ["تحديد الهدف", "تحديد العنوان", "كتابة الخاتمة", "تصميم شجرة الذاكرة"], e: "تحديد الهدف يتحكم في اختيار الفن التعبيري وأسلوب العرض المناسب." },
+            { q: "عرض الحقائق بدقة وموضوعية، وخاتمة تتضمن النتائج والتوصيات ينطبق على:", a: "التقرير", options: ["التقرير", "القصة", "الخاطرة", "الرسالة الإدارية"], e: "التقرير يعتمد على الحقائق والنتائج والتوصيات المحددة بدقة." },
+            { q: "ما الرسم التخطيطي الذي يضع العنوان في الجذع والأفكار الرئيسة في الأغصان والجزئيات في الأسهم؟", a: "شجرة الذاكرة", options: ["شجرة الذاكرة", "هيكل السمكة", "رسم التقرير", "جدول الرسائل"], e: "شجرة الذاكرة وسيلة هامة لتلخيص مخطط الموضوع وتنظيم أفكاره." },
+            { q: "ينبغي للكاتب في مرحلة المسودة ألا ينشغل كثيراً بـ:", a: "التعديل الفوري والتوقف عند كل خطأ إملائي", options: ["التعديل الفوري والتوقف عند كل خطأ إملائي", "عرض المعلومات الأساسية", "بناء الأفكار في فقرات", "تغطية الهدف المطلوب"], e: "في المسودة يركز الكاتب على تدفق الأفكار واستيفائها، ويت ترك التصحيح لمرحلة المراجعة." },
+            { q: "طرح أسئلة مثيرة في مقدمة الموضوع يهدف بالدرجة الأولى إلى:", a: "تشويق القارئ وتمهيد ذهنه للموضوع", options: ["تشويق القارئ وتمهيد ذهنه للموضوع", "إحراج القارئ وعدم إعطائه الإجابة", "إنهاء الموضوع قبل بدايته", "كتابة خاتمة سريعة"], e: "المقدمة المشوقة تستخدم الأسئلة أو الحقائق لإثارة تفكير القارئ وجذبه." },
+            { q: "جمع المعلومات من الصحف والإنترنت والمقابلات يعتبر الخطوة:", a: "الثالثة في بناء الموضوع", options: ["الثالثة في بناء الموضوع", "الأولى في بناء الموضوع", "الخامسة في بناء الموضوع", "الأخيرة في بناء الموضوع"], e: "خطوات البناء: 1-اختيار الموضوع، 2-تحديد الهدف، 3-جمع المعلومات وتصنيفها." },
+            { q: " العبارة الصحيحة فيما يتعلق بمراجعة الكتاب لموضوعاتهم هي:", a: "دائماً يراجع الكتاب الموضوعيون ما كتبوه مراراً وتكراراً قبل النشر", options: ["دائماً يراجع الكتاب الموضوعيون ما كتبوه مراراً وتكراراً قبل النشر", "الكاتب الممتاز ينشر كتاباته من المرة الأولى دون مراجعة", "المراجعة تفقد الموضوع جماله", "المراجعة تقتصر على تعديل العنوان فقط"], e: "الكتاب دائماً يراجعون أعمالهم مراراً وتكراراً لتنقيحها قبل عرضها على الناس." },
+            { q: "الخاتمة الجيدة في المقال تتضمن عادةً:", a: "تلخيص أهم الأفكار، أو تقديم حل لمشكلة، أو توصية", options: ["تلخيص أهم الأفكار، أو تقديم حل لمشكلة، أو توصية", "شرح الفكرة الرئيسية الأولى بالتفصيل", "عرض الأسئلة والمراجع فقط", "بيانات المرسل والتاريخ"], e: "الخاتمة تلخص الموضوع أو تخرج بحل للمشكلة أو تضع توصيات نهائية." },
+            { q: "الترتيب الصحيح لخطوات بناء الموضوع الأولى هو:", a: "اختيار الموضوع -> تحديد الهدف -> جمع المعلومات -> التخطيط", options: ["اختيار الموضوع -> تحديد الهدف -> جمع المعلومات -> التخطيط", "الكتابة النهائية -> المسودة -> اختيار الموضوع -> المراجعة", "التخطيط -> اختيار الموضوع -> المراجعة -> تحديد الهدف", "جمع المعلومات -> المبيضة -> اختيار الموضوع -> المسودة"], e: "خطوات البناء تبدأ باختيار الموضوع، ثم تحديد الهدف، ثم الجمع والتصنيف، فالتخطيط." },
+            { q: "ما الذي يميز المقال عن التقرير في العرض؟", a: "المقال يعبر عن آراء وأفكار في فقرات، بينما التقرير يقدم حقائق منظمة ببيانات ودقة", options: ["المقال يعبر عن آراء وأفكار في فقرات، بينما التقرير يقدم حقائق منظمة ببيانات ودقة", "المقال يحوي زماناً ومكاناً والتقرير يحوي حبكة", "المقال يرسل إلى مدير والتقرير يكتب للجمهور فقط", "لا يوجد أي فرق بين المقال والتقرير"], e: "المقال يركز على صياغة الأفكار والتعبير عنها، بينما التقرير يركز على الحقائق والأرقام والنتائج." },
+            { q: "الهدف الأسمى من تعلم مهارات بناء الموضوع هو:", a: "إيصال الرسالة والأفكار بوضوح ودقة وتأثير وإقناع للمستقبل", options: ["إيصال الرسالة والأفكار بوضوح ودقة وتأثير وإقناع للمستقبل", "حفظ التعاريف دون تطبيق كتابي", "ملء صفحات دفتر التعبير بالكلمات", "السرعة في الإنهاء دون الاهتمام بالترتيب"], e: "إتقان الكتابة الموضوعية يمنح الكاتب القدرة على التعبير المنظم وتوصيل رسالته بفعالية." }
+        ];
+
+        const classifyData = [
+            { text: "فن تعبيري يضم: عنوان، مقدمة، عرض فقرات، وخاتمة.", correct: "المقال", options: ["المقال", "القصة", "الرسالة الإدارية", "التقرير"], exp: "المقال فن تعبيري يتألف من هذه العناصر الأربعة." },
+            { text: "فن تعبيري يتكون من: زمان ومكان، شخصيات، أحداث، وحبكة وعقدة.", correct: "القصة", options: ["القصة", "المقال", "التقرير", "الرسالة الإدارية"], exp: "القصة تعتمد على العناصر السردية المتكاملة." },
+            { text: "فن تعبيري يتشكل من: بسملة، تاريخ، بيانات، تحية، موضوع، خاتمة، وتوقيع.", correct: "الرسالة الإدارية", options: ["الرسالة الإدارية", "التقرير", "المقال", "القصة"], exp: "عناصر الرسالة الرسمية الإدارية تتميز بالتنظيم الرقمي والشكل الخارجي." },
+            { text: "فن تعبيري يعتمد على: عرض منظم للحقائق، والنتائج والتوصيات، ودقة وموضوعية.", correct: "التقرير", options: ["التقرير", "المقال", "القصة", "الرسالة الإدارية"], exp: "التقرير يقدم الحقائق والبيانات بدقة موضوعية." },
+            { text: "أن يكون العنوان قصيراً ومثيراً ودالاً على المحتوى يمثل مهارة [  ].", correct: "اختيار العنوان", options: ["اختيار العنوان", "بناء المقدمة", "تسلسل الأفكار", "بناء الخاتمة"], exp: "من مهارات بناء الموضوع اختيار عنوان دال ومثير وقصير." },
+            { text: "بدء الفقرة بفراغ بمقدار كلمة وانتهائها بنقطة يمثل مهارة [  ].", correct: "الكتابة في فقرات", options: ["الكتابة في فقرات", "تحديد الهدف", "جمع المعلومات", "تحديد العنوان"], exp: "الكتابة في فقرات تتطلب بدء الفقرة بفراغ وانهاءها بنقطة." },
+            { text: "أن تكون المقدمة قصيرة ومشوقة وتمهد للموضوع يمثل مهارة [  ].", correct: "بناء المقدمة", options: ["بناء المقدمة", "بناء الخاتمة", "المراجعة", "جمع المعلومات"], exp: "المقدمة تمهد للموضوع وتشوق الذهن." },
+            { text: "ترتيب الأفكار منطقياً أو زمنياً بحيث تمهد كل فكرة لما بعدها هي مهارة [  ].", correct: "تسلسل الأفكار", options: ["تسلسل الأفكار", "اختيار الموضوع", "كتابة المسودة", "تصنيف الأفكار"], exp: "تسلسل الأفكار يضمن الترابط المنطقي والزمني بين فقرات النص." },
+            { text: "أول خطوة من خطوات بناء الموضوع هي [  ].", correct: "اختيار الموضوع", options: ["اختيار الموضوع", "تحديد الهدف", "التخطيط للموضوع", "جمع المعلومات"], exp: "يبدأ بناء الموضوع دائماً باختيار موضوع مناسب للكاتب والقارئ." },
+            { text: "تحديد سبب الكتابة (تعبير عن ذات، معالجة معلومات...) يسمى [  ].", correct: "تحديد الهدف", options: ["تحديد الهدف", "المراجعة", "التنقيح", "تسلسل الأفكار"], exp: "تحديد الهدف يوجه الفن التعبيري وأسلوب الكتابة." },
+            { text: "جمع البيانات من الكتب، الصحف، الإنترنت، والمقابلات يمثل خطوة [  ].", correct: "جمع المعلومات وتصنيفها", options: ["جمع المعلومات وتصنيفها", "الكتابة النهائية", "اختيار العنوان", "المراجعة"], exp: "جمع المعلومات وتصنيفها يغذي أفكار الكاتب بالشواهد والدلائل." },
+            { text: "استخدام رسم شجرة الذاكرة أو هيكل السمكة يندرج تحت خطوة [  ].", correct: "التخطيط للموضوع", options: ["التخطيط للموضوع", "الكتابة النهائية", "المراجعة", "تحديد الهدف"], exp: "التخطيط يعتمد على رسم مخططات هيكلية مثل شجرة الذاكرة وهيكل السمكة." },
+            { text: "الكتابة الأولى التي تركز على استيفاء الأفكار دون توقف لتصحيح الأخطاء هي [  ].", correct: "الكتابة الأولى (المسودة)", options: ["الكتابة الأولى (المسودة)", "الكتابة النهائية", "المراجعة", "التنقيح"], exp: "المسودة تركز على تدفق الأفكار وعرض المعلومات بالكامل أولاً." },
+            { text: "التأكد من صحة الإملاء والترقيم وقوة التأثير والإقناع يمثل خطوة [  ].", correct: "المراجعة", options: ["المراجعة", "المسودة", "اختيار الموضوع", "تحديد الهدف"], exp: "المراجعة تفحص صحة اللغة والتسلسل المنطقي والتأثير." },
+            { text: "كتابة المبيضة والاهتمام بجودة الإخراج وتناسق الهوامش يمثل خطوة [  ].", correct: "الكتابة النهائية (المبيضة)", options: ["الكتابة النهائية (المبيضة)", "الكتابة الأولى", "التخطيط", "جمع البيانات"], exp: "الكتابة النهائية تقدم الموضوع في صورته الإخراجية الجاهزة للقراءة." },
+            { text: "رسم يشبه الشجرة، جذعها للعنوان وأغصانها للأفكار يُدعى [  ].", correct: "شجرة الذاكرة", options: ["شجرة الذاكرة", "هيكل السمكة", "جدول التقرير", "الرسالة الرسمية"], exp: "شجرة الذاكرة وسيلة تخطيطية لتوزيع العنوان والأفكار الجزئية." },
+            { text: "رسم يخصص ذيله للعنوان ورأسه للفكرة الكلية وعظامه للتفاصيل هو [  ].", correct: "هيكل السمكة", options: ["هيكل السمكة", "شجرة الذاكرة", "المقالة الأدبية", "المسودة"], exp: "مخطط هيكل السمكة يلخص هيكلية الموضوع بشكل منظم." },
+            { text: "تلخيص أهم الأفكار أو تقديم حلاً لمشكلة أو توصية يظهر في [  ].", correct: "خاتمة المقال والتقرير", options: ["خاتمة المقال والتقرير", "مقدمة القصة", "بيانات الرسالة", "عنوان الموضوع"], exp: "الخاتمة تلخص أهم المحتويات وتخرج بتوصيات أو حلول." },
+            { text: "استغلال الملاحظة والخبرات الشخصية يُعد من [  ].", correct: "مصادر جمع المعلومات", options: ["مصادر جمع المعلومات", "أدوات الإملاء", "عناصر القصة", "خطوات المراجعة"], exp: "الخبرة الشخصية والملاحظة من المصادر الهامة لجمع المعلومات." },
+            { text: "الاهتمام بنظافة ورقة المبيضة وتناسق الخط والهوامش ينتمي لـ [  ].", correct: "جودة الإخراج النهائي", options: ["جودة الإخراج النهائي", "تحديد الهدف", "جمع المصادر", "اختيار الفن"], exp: "الإخراج النهائي الجيد هو ثمرة مرحلة الكتابة النهائية." },
+            { text: "تحديد أساليب العرض والإقناع والشواهد يتم أثناء [  ].", correct: "تصميم مخطط الموضوع", options: ["تصميم مخطط الموضوع", "البسملة والتاريخ", "عنوان التقرير", "الفهرس"], exp: "تصميم المخطط يتضمن تحديد وسائل التأثير والادلة والشواهد." },
+            { text: "الكتابة التي تمتاز بالرسمية، الوضوح، والإيجاز تسمى [  ].", correct: "الرسائل الإدارية والتقارير", options: ["الرسائل الإدارية والتقارير", "القصص والروايات", "القصائد الشعرية", "المذكرات الشخصية"], exp: "الرسائل الإدارية والتقارير تتسم بالموضوعية والوضوح والرسمية." },
+            { text: "تقسيم الفكرة الكلية إلى أفكار رئيسة ثم تفريعها يُسمى [  ].", correct: "تصنيف الأفكار والجزئيات", options: ["تصنيف الأفكار والجزئيات", "المراجعة الإملائية", "كتابة التوقيع", "صياغة المقدمة"], e: "تصنيف الأفكار والجزئيات يوضح شبكة العلاقات بين العناصر." },
+            { text: "مراجعة الكاتب لموضوعه مراراً وتكراراً قبل العرض هي سمة [  ].", correct: "الكاتب الماهر", options: ["الكاتب الماهر", "القارئ العابر", "المستمع الجيد", "الناشر فقط"], exp: "الكتاب الماهرون ينقحون ويراجعون كتاباتهم مراراً لتخرج بأفضل صورة." },
+            { text: "الغاية الكبرى من مهارات بناء الموضوع هي [  ].", correct: "التعبير المنظم وتوصيل المعنى بقوة وإقناع", options: ["التعبير المنظم وتوصيل المعنى بقوة وإقناع", "زيادة عدد الكلمات", "إلغاء التخطيط", "سرعة الإنجاز بدون فهم"], exp: "الهدف هو الوصول للتعبير المنظم وتوصيل المعنى بدقة وإقناع." }
+        ];
+
+        let questions = [];
+        let currentQIndex = 0;
+        let score = 0;
+        let canAnswer = true;
+
+        let classifyQuestions = [];
+        let currentClassifyIndex = 0;
+        let classifyScore = 0;
+        let canClassify = true;
+
+        const synth = new Tone.Synth().toDestination();
+
+        function playSound(type) {
+            try {
+                if (Tone.context.state !== 'running') {
+                    Tone.start();
+                }
+                if (type === 'correct') {
+                    synth.triggerAttackRelease("G5", "8n");
+                } else if (type === 'wrong') {
+                    synth.triggerAttackRelease("C3", "8n");
+                }
+            } catch(e) {}
+        }
+
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tabId === 'cheatsheet') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('cheatsheet').classList.add('active');
+            } else if (tabId === 'quiz') {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('quiz').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-btn')[2].classList.add('active');
+                document.getElementById('classify').classList.add('active');
+                initClassify();
+            }
+        }
+
+        /* Quiz Logic */
+        function initQuiz() {
+            questions = rawQuestions.map(q => ({
+                q: q.q,
+                a: q.a,
+                options: shuffleArray(q.options),
+                e: q.e
+            }));
+            questions = shuffleArray(questions);
+            currentQIndex = 0;
+            score = 0;
+            canAnswer = true;
+
+            document.getElementById('quiz-score').innerText = `النقاط: ${score}`;
+            document.getElementById('results-area').style.display = 'none';
+            document.getElementById('question-text').style.display = 'block';
+            document.getElementById('options-container').style.display = 'grid';
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            canAnswer = true;
+            const qData = questions[currentQIndex];
+            
+            document.getElementById('quiz-progress').innerText = `السؤال ${currentQIndex + 1} من ${questions.length}`;
+            document.getElementById('question-text').innerText = qData.q;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            document.getElementById('explanation-box').style.display = 'none';
+            document.getElementById('btn-next').style.display = 'none';
+
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `<span>${opt}</span><i class="fa-regular fa-circle"></i>`;
+                btn.onclick = () => selectAnswer(btn, opt, qData.a, qData.e);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(selectedBtn, selectedOption, correctAnswer, explanation) {
+            if (!canAnswer) return;
+            canAnswer = false;
+
+            const allBtns = document.querySelectorAll('.option-btn');
+            
+            if (selectedOption === correctAnswer) {
+                selectedBtn.classList.add('correct');
+                selectedBtn.querySelector('i').className = 'fa-solid fa-circle-check';
+                score += 1;
+                document.getElementById('quiz-score').innerText = `النقاط: ${score}`;
+                playSound('correct');
+            } else {
+                selectedBtn.classList.add('incorrect');
+                selectedBtn.querySelector('i').className = 'fa-solid fa-circle-xmark';
+                playSound('wrong');
+
+                allBtns.forEach(btn => {
+                    if (btn.innerText.trim() === correctAnswer) {
+                        btn.classList.add('correct');
+                        btn.querySelector('i').className = 'fa-solid fa-circle-check';
+                    }
+                });
+            }
+
+            const expBox = document.getElementById('explanation-box');
+            expBox.innerHTML = `<strong><i class="fa-solid fa-lightbulb"></i> الشرح والتوضيح:</strong> ${explanation}`;
+            expBox.style.display = 'block';
+
+            document.getElementById('btn-next').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            if (currentQIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('question-text').style.display = 'none';
+            document.getElementById('options-container').style.display = 'none';
+            document.getElementById('explanation-box').style.display = 'none';
+            document.getElementById('btn-next').style.display = 'none';
+            
+            const resultsArea = document.getElementById('results-area');
+            resultsArea.style.display = 'block';
+
+            document.getElementById('final-score-circle').innerHTML = `${score}/${questions.length}<span>درجتك النهائية</span>`;
+            
+            let message = "";
+            if (score >= 26) {
+                message = "مبدع ورائع جداً! متقن لمهارات الاتصال الكتابي وعناصر بناء الموضوع 🌟";
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            } else if (score >= 20) {
+                message = "أداء ممتاز! تمكّنت من أغلب مهارات وحدة مهارات الكتابة الموضوعية 👍";
+            } else {
+                message = "محاولة جيدة، راجع ملخص الفنون والخطوات المفصل في التبويب الأول ثم أعد الاختبار 📚";
+            }
+            document.getElementById('final-message').innerText = message;
+        }
+
+        function restartQuiz() {
+            initQuiz();
+        }
+
+        /* Classify Game Logic */
+        function initClassify() {
+            classifyQuestions = classifyData.map(c => ({
+                text: c.text,
+                correct: c.correct,
+                options: shuffleArray(c.options),
+                exp: c.exp
+            }));
+            classifyQuestions = shuffleArray(classifyQuestions);
+            currentClassifyIndex = 0;
+            classifyScore = 0;
+            canClassify = true;
+
+            document.getElementById('classify-score').innerText = `النقاط: ${classifyScore}`;
+            document.getElementById('classify-results').style.display = 'none';
+            document.getElementById('classify-text').style.display = 'block';
+            document.getElementById('classify-buttons').style.display = 'grid';
+
+            loadClassifyItem();
+        }
+
+        function loadClassifyItem() {
+            canClassify = true;
+            const item = classifyQuestions[currentClassifyIndex];
+            
+            document.getElementById('classify-progress').innerText = `الفقرة ${currentClassifyIndex + 1} من ${classifyQuestions.length}`;
+            document.getElementById('classify-text').innerText = item.text;
+            document.getElementById('classify-feedback').style.display = 'none';
+            document.getElementById('classify-next-btn').style.display = 'none';
+
+            const btnsContainer = document.getElementById('classify-buttons');
+            btnsContainer.innerHTML = '';
+
+            item.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'target-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkClassify(btn, opt, item.correct, item.exp);
+                btnsContainer.appendChild(btn);
+            });
+        }
+
+        function checkClassify(selectedBtn, selected, correct, exp) {
+            if (!canClassify) return;
+            canClassify = false;
+
+            const feedback = document.getElementById('classify-feedback');
+            if (selected === correct) {
+                playSound('correct');
+                classifyScore += 1;
+                document.getElementById('classify-score').innerText = `النقاط: ${classifyScore}`;
+                feedback.innerHTML = `<span style="color: var(--success); font-weight:800;"><i class="fa-solid fa-circle-check"></i> إجابة صحيحة!</span> ${exp}`;
+            } else {
+                playSound('wrong');
+                feedback.innerHTML = `<span style="color: var(--accent-red); font-weight:800;"><i class="fa-solid fa-circle-xmark"></i> إجابة خاطئة!</span> الإجابة الصحيحة هي: (${correct}). ${exp}`;
+            }
+            feedback.style.display = 'block';
+            document.getElementById('classify-next-btn').style.display = 'block';
+        }
+
+        function nextClassifyItem() {
+            currentClassifyIndex++;
+            if (currentClassifyIndex < classifyQuestions.length) {
+                loadClassifyItem();
+            } else {
+                showClassifyResults();
+            }
+        }
+
+        function showClassifyResults() {
+            document.getElementById('classify-text').style.display = 'none';
+            document.getElementById('classify-buttons').style.display = 'none';
+            document.getElementById('classify-feedback').style.display = 'none';
+            document.getElementById('classify-next-btn').style.display = 'none';
+
+            const resBox = document.getElementById('classify-results');
+            resBox.style.display = 'block';
+            document.getElementById('classify-final-score').innerHTML = `${classifyScore}/${classifyQuestions.length} <span>درجة التحدي</span>`;
+            if (classifyScore >= 20) {
+                confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+            }
+        }
+
+        function restartClassify() {
+            initClassify();
+        }
+
+        window.onload = () => {
+            initQuiz();
+        };
+    </script>
+</body>
+</html>
